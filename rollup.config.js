@@ -6,15 +6,10 @@ export default {
     'main':  path.resolve(__dirname, 'src', 'index.js'),
   },
   output: {
-    format: 'iife',
+    format: 'es',
     dir: path.resolve(__dirname, 'dist'),
     name: "vPageState",
     plugins: [terser()],
-    globals: {
-      vue: 'Vue',
-      vuex: 'Vuex',
-      lodash: 'lodash',
-    }
   },
   watch: {
     clearScreen: true,
