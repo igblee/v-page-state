@@ -3,6 +3,7 @@ import page1 from '@/store/modules/page1/'
 import page2 from '@/store/modules/page2/'
 import root from '@/store/modules/root/'
 import pageState from '@glennlee/v-page-state'
+console.log('[app debug]: pageState', pageState)
 
 const config = {
   root: {
@@ -22,5 +23,5 @@ const config = {
   routePath: '$path', // default '$path'
   pathInRootState: '$customPath', // default `routePath`
 }
-export const { store, updatePageModule, generateVuexMapUtil, } = pageState(config)
+export const { store, updatePageModule, generateVuexMapUtil, resetState } = pageState(config)
 export default store

@@ -4,7 +4,25 @@ import Vuex, { createNamespacedHelpers } from 'vuex'
 import { myTypeOf, nextTick } from './utils/'
 
 Vue.use(Vuex)
-
+const intervalTypePrefix = '__page-state__:'
+const types = {
+  'resetState': `${intervalTypePrefix}resetState`
+}
+const internalStore = {
+  state: {},
+  getters: {},
+  mutations: {
+    [types.resetState](state, payload) {
+      payload.path.reduce((acc, curr, index) => {
+        if(index === payload.path.length - 1) {
+          acc[curr] = payload.state
+        }
+        return acc[curr]
+      }, state)
+    }
+  },
+  actions: {}
+}
 function hasOwnProperty (target, prop) {
   return Object.hasOwnProperty.call(target, prop)
 }
@@ -12,6 +30,9 @@ let generateVuexMapUtil = () => {
   throw new Error('[page-state error]', 'page-state not init')
 }
 let updatePageModule = () => {
+  throw new Error('[page-state error]', 'page-state not init')
+}
+let resetState = () => {
   throw new Error('[page-state error]', 'page-state not init')
 }
 const defaultModule = {
@@ -31,7 +52,7 @@ const defaultModule = {
 }
 function handleRootStore (config) {
   const { root, routeModuleName, } = config
-  return merge(root.store, {
+  return merge(root.store, internalStore, {
     namespaced: true,
     modules: {
       [routeModuleName]: defaultModule,
@@ -127,6 +148,21 @@ function generateVuexMapUtilWrapper (config) {
     }
   }
 }
+function resetStateWrapper (config, store) {
+  const { routeModuleName, routeModules, } = config
+  return function (routeName) {
+    if(!Object.keys(routeModules).includes(routeName)) {
+      console.warn('[page-state warn]','`routeName` params is not exist in `routeModules`')
+      return
+    }
+    const state = cloneDeep(routeModules[routeName].store.state)
+    const payload = {
+      path: [routeModuleName, routeName],
+      state,
+    }
+    store.commit(`${types.resetState}`, payload)
+  }
+}
 function checkParams (config) {
   const { root, routeModules, routeModuleName, routePath, } = config
   if (!routeModuleName) {
@@ -164,10 +200,12 @@ function pageState (config) {
   const store = new Vuex.Store(config.root.store)
   updatePageModule = updatePageModuleWrapper(config, store)
   generateVuexMapUtil = generateVuexMapUtilWrapper(config)
+  resetState = resetStateWrapper(config, store)
   return {
     store,
     updatePageModule,
     generateVuexMapUtil,
+    resetState,
   }
 }
 export default pageState

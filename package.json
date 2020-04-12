@@ -1,6 +1,6 @@
 {
   "name": "@glennlee/v-page-state",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "page state base on vue & vuex",
   "main": "dist/main.js",
   "scripts": {

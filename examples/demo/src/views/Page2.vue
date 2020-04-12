@@ -8,12 +8,13 @@
     <button @click="changeKeepState">change keepState</button>
     <div> notKeepState: {{notKeepState}}</div>
     <button @click="changeKeepNotState">change notKeepState</button>
+    <button @click="handleResetState">reset state</button>
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'
-import { generateVuexMapUtil } from '@/store/page-state.config.js'
+import { generateVuexMapUtil,resetState } from '@/store/page-state.config.js'
 const { mapPageState, } = generateVuexMapUtil('page2')
 export default {
   name: 'Page2',
@@ -29,6 +30,9 @@ export default {
     changeKeepNotState() {
       const payload = parseInt(Math.random() * 10)
       this.$store.commit(`${this.$path}UPDATE_NOT_KEEP_STATE`, payload)
+    },
+    handleResetState() {
+      resetState('page2')
     }
   }
 };
